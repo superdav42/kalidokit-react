@@ -1,11 +1,10 @@
-import { useFrame, useLoader, Euler } from "@react-three/fiber";
+import { useFrame, useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { VRMLoaderPlugin, VRMHumanBoneName, VRMExpressionPresetName } from '@pixiv/three-vrm';
 import * as THREE from "three";
 import {Utils, Pose, Hand, Face, Vector} from "kalidokit"
 
 const Model = (props) => {
-    const remap = Utils.remap;
     const clamp = Utils.clamp;
     const lerp = Vector.lerp;
 
@@ -83,7 +82,10 @@ const Model = (props) => {
             "XYZ"
         );
         oldLookTarget.copy(lookTarget);
-        gltf.userData.vrm.lookAt.applier.lookAt(lookTarget);
+
+        const yaw = THREE.MathUtils.RAD2DEG * lookTarget.y;
+        const pitch = THREE.MathUtils.RAD2DEG * lookTarget.x;
+        gltf.userData.vrm.lookAt.applier.applyYawPitch(yaw, pitch);
     };
 
     /* VRM Character Animator */

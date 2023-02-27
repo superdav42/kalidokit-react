@@ -1,21 +1,12 @@
 import { Camera } from '@mediapipe/camera_utils';
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { FACEMESH_TESSELATION, HAND_CONNECTIONS, Holistic, POSE_CONNECTIONS } from "@mediapipe/holistic";
 import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 
-const WebCam = ( props ) => {
+const WebCam = ( { onHolisticResults } ) => {
 
     const canvasRef = useRef();
-
-    const onResults = (results) => {
-        // Draw landmark guides
-        drawResults(results);
-        // Animate model
-        props.onHolisticResults(results);
-        // animateVRM(currentVrm, results);
-    };
-
-    const drawResults = (results) => {
+    const drawResults = useCallback((results) => {
         canvasRef.current.width = videoRef.current.videoWidth;
         canvasRef.current.height = videoRef.current.videoHeight;
         let canvasCtx = canvasRef.current.getContext("2d");
@@ -57,7 +48,15 @@ const WebCam = ( props ) => {
             color: "#ff0364",
             lineWidth: 2,
         });
-    };
+    }, []);
+
+    const onResults = useCallback((results) => {
+        // Draw landmark guides
+        drawResults(results);
+        // Animate model
+        onHolisticResults(results);
+        // animateVRM(currentVrm, results);
+    }, [drawResults, onHolisticResults]);
 
     const videoRef = useRef()
     useEffect(() => {
@@ -75,7 +74,7 @@ const WebCam = ( props ) => {
                 minTrackingConfidence: 0.7,
                 refineFaceLandmarks: true,
             });
-// Pass holistic a callback function
+            // Pass holistic a callback function
             holistic.onResults(onResults);
 
             const camera = new Camera(videoRef.current, {
@@ -87,7 +86,7 @@ const WebCam = ( props ) => {
             });
             camera.start();
         }
-    },[videoRef])
+    },[videoRef, onResults])
 
     return (
         <div className="preview">
