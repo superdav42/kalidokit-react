@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@mediapipe/holistic": "^0.5.1675471629",
+    "@mediapipe/holistic": "0.5.1635989137",
     "@mediapipe/camera_utils": "^0.3.1675466862",
     "@mediapipe/drawing_utils": "^0.3.1675466124",
     "@pixiv/three-vrm": "^1.0.8",
