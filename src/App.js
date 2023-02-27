@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { Canvas } from "@react-three/fiber";
+import Model from "./components/Model";
+import { Environment, OrbitControls } from "@react-three/drei";
+import { Suspense } from "react";
+import WebCam from "./components/WebCam";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    let results;
+
+    const onHolisticResults = (newResults) => {
+        results = newResults;
+    }
+
+    const getHolisticResults = () => {
+        return results;
+    }
+    return (
+            <div className='App'>
+                <Canvas>
+                    <Suspense fallback={null}>
+                        <ambientLight intensity={0.001} />
+                        <directionalLight color="white" position={[1, 1, 1]} normalize={true} />
+                        <Model getHolisticResults={getHolisticResults} />
+                        <OrbitControls />
+                        <Environment preset="sunset" background />
+                    </Suspense>
+                </Canvas>
+                <WebCam onHolisticResults={onHolisticResults} />
+            </div>
+    );
 }
 
 export default App;
